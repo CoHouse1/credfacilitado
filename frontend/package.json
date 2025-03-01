@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 3001",
-    "build": "npm install && npx patch-package && next build",
+    "build": "npx patch-package && next build",
     "start": "next start",
     "lint": "next lint"
   },
