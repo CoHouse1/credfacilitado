@@ -1,0 +1,140 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 20% 92%;      /* Cinza claro pastel (base) */
+    --foreground: 160 30% 20%;      /* Verde escuro suave (texto) */
+    
+    --card: 210 15% 95%;           /* Branco levemente acinzentado */
+    --card-foreground: 160 25% 25%;
+    
+    --popover: 210 10% 96%;        /* Branco quase puro, mas suave */
+    --popover-foreground: 160 30% 20%;
+    
+    --primary: 160 40% 45%;        /* Verde-água suave (botões principais) */
+    --primary-foreground: 210 20% 95%; /* Cinza claro para contraste */
+    
+    --secondary: 160 30% 85%;      /* Verde pastel claro (secundário) */
+    --secondary-foreground: 160 30% 25%;
+    
+    --muted: 160 20% 90%;          /* Verde muito claro (desaturado) */
+    --muted-foreground: 160 15% 40%;
+    
+    --accent: 140 35% 50%;         /* Verde menta suave (destaques) */
+    --accent-foreground: 210 20% 95%;
+    
+    --destructive: 5 70% 50%;      /* Coral vibrante (alertas) */
+    --destructive-foreground: 210 20% 95%;
+    
+    --border: 160 20% 85%;         /* Bordas verdes claras */
+    --input: 160 20% 92%;          /* Campos de entrada */
+    --ring: 160 40% 60%;           /* Anéis de foco em verde água */
+    
+    --chart-1: 170 40% 60%;        /* Verde-água pastel */
+    --chart-2: 150 35% 55%;        /* Verde menta */
+    --chart-3: 130 30% 50%;        /* Verde floresta suave */
+    --chart-4: 190 35% 55%;        /* Verde-azulado */
+    --chart-5: 100 30% 60%;        /* Verde-limão desbotado */
+
+    --radius: 0.5rem;
+
+}
+
+  .dark {
+    --background: 210 15% 12%;       /* Azul-cinza escuro suave (base pastel) */
+    --foreground: 150 30% 85%;      /* Verde pastel claro (texto) */
+    
+    --card: 210 12% 15%;           /* Cinza-ardósia claro */
+    --card-foreground: 150 25% 80%;
+    
+    --popover: 200 10% 18%;        /* Azul pastelizado */
+    --popover-foreground: 150 20% 82%;
+    
+    --primary: 160 40% 45%;        /* Verde-água suave */
+    --primary-foreground: 210 25% 15%;
+    
+    --secondary: 170 25% 30%;      /* Verde-petróleo claro */
+    --secondary-foreground: 150 30% 88%;
+    
+    --muted: 165 15% 25%;         /* Verde-cinza desaturado */
+    --muted-foreground: 150 15% 65%;
+    
+    --accent: 140 35% 40%;         /* Verde menta suave */
+    --accent-foreground: 210 20% 90%;
+    
+    --destructive: 5 60% 40%;      /* Coral escuro */
+    --destructive-foreground: 60 50% 95%;
+    
+    --border: 165 21.41% 16.08%;         /* Bordas esverdeadas suaves */
+    --input: 170 18% 25%;          /* Campos com toque pastel */
+    --ring: 150 30% 50%;           /* Destaque em verde água */
+    
+    --chart-1: 170 35% 55%;        /* Verde-água pastel */
+    --chart-2: 150 30% 50%;        /* Verde menta */
+    --chart-3: 130 25% 45%;        /* Verde floresta suave */
+    --chart-4: 190 30% 50%;        /* Verde-azulado */
+    --chart-5: 100 25% 55%;        /* Verde-limão desbotado */
+}
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.loader {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  position: fixed;
+  background: transparent;
+  overflow: hidden;
+  z-index: 9999;
+}
+.loader::after {
+  content: '';
+  width: 40%;
+  height: 3px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  animation: animloader 1s linear infinite;
+  @apply bg-primary;
+}
+
+@media (min-width: 800px) {
+  .loader::after {
+    width: 20%;
+    animation: animloader 2s linear infinite;
+  }
+}
+
+@keyframes animloader {
+  0% {
+    left: 0;
+    transform: translateX(-100%);
+  }
+  100% {
+    left: 100%;
+    transform: translateX(0%);
+  }
+}
+
+
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

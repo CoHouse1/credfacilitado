@@ -1,0 +1,179 @@
+diff --git a/node_modules/@stackframe/stack/dist/esm/components-page/account-settings.js b/node_modules/@stackframe/stack/dist/esm/components-page/account-settings.js
+index 64673ac..b108107 100644
+--- a/node_modules/@stackframe/stack/dist/esm/components-page/account-settings.js
++++ b/node_modules/@stackframe/stack/dist/esm/components-page/account-settings.js
+@@ -62,42 +62,8 @@ function AccountSettings(props) {
+           icon: /* @__PURE__ */ jsx(Icon, { name: "Settings" }),
+           content: /* @__PURE__ */ jsx(SettingsPage, {})
+         },
+-        ...props.extraItems?.map((item) => ({
+-          title: item.title,
+-          type: "item",
+-          id: item.id,
+-          icon: (() => {
+-            const iconName = item.iconName;
+-            if (iconName) {
+-              return /* @__PURE__ */ jsx(Icon, { name: iconName });
+-            } else if (item.icon) {
+-              return item.icon;
+-            }
+-            return null;
+-          })(),
+-          content: item.content
+-        })) || [],
+-        ...teams.length > 0 || project.config.clientTeamCreationEnabled ? [{
+-          title: t("Teams"),
+-          type: "divider"
+-        }] : [],
+-        ...teams.map((team) => ({
+-          title: /* @__PURE__ */ jsxs("div", { className: "flex gap-2 items-center w-full", children: [
+-            /* @__PURE__ */ jsx(TeamIcon, { team }),
+-            /* @__PURE__ */ jsx(Typography, { className: "max-w-[320px] md:w-[90%] truncate", children: team.displayName })
+-          ] }),
+-          type: "item",
+-          id: `team-${team.id}`,
+-          content: /* @__PURE__ */ jsx(TeamPage, { team })
+-        })),
+-        ...project.config.clientTeamCreationEnabled ? [{
+-          title: t("Create a team"),
+-          icon: /* @__PURE__ */ jsx(Icon, { name: "CirclePlus" }),
+-          type: "item",
+-          id: "team-creation",
+-          content: /* @__PURE__ */ jsx(TeamCreation, {})
+-        }] : []
+-      ].filter((p) => p.type === "divider" || p.content),
++       
++        ].filter((p) => p.type === "divider" || p.content),
+       title: t("Account Settings")
+     }
+   ) }) });
+diff --git a/node_modules/@stackframe/stack/dist/esm/components/elements/sidebar-layout.js b/node_modules/@stackframe/stack/dist/esm/components/elements/sidebar-layout.js
+index 1066d23..4168317 100644
+--- a/node_modules/@stackframe/stack/dist/esm/components/elements/sidebar-layout.js
++++ b/node_modules/@stackframe/stack/dist/esm/components/elements/sidebar-layout.js
+@@ -1,27 +1,29 @@
+ "use client";
+-"use client";
+ 
+-// src/components/elements/sidebar-layout.tsx
+ import { useHash } from "@stackframe/stack-shared/dist/hooks/use-hash";
+ import { Button, Typography, cn } from "@stackframe/stack-ui";
+-import { XIcon } from "lucide-react";
++import { XIcon, MenuIcon } from "lucide-react"; 
+ import { useRouter } from "next/navigation";
+-import { useEffect } from "react";
++import { useEffect, useState } from "react"; 
+ import { Fragment, jsx, jsxs } from "react/jsx-runtime";
++
+ function SidebarLayout(props) {
+   const router = useRouter();
+   const hash = useHash();
+   const selectedIndex = props.items.findIndex((item) => item.id && item.id === hash);
++
+   useEffect(() => {
+     if (selectedIndex === -1) {
+       router.push("#" + props.items[0].id);
+     }
+   }, [hash]);
++
+   return /* @__PURE__ */ jsxs(Fragment, { children: [
+     /* @__PURE__ */ jsx("div", { className: cn("hidden sm:flex stack-scope h-full", props.className), children: /* @__PURE__ */ jsx(DesktopLayout, { items: props.items, title: props.title, selectedIndex }) }),
+     /* @__PURE__ */ jsx("div", { className: cn("sm:hidden stack-scope h-full", props.className), children: /* @__PURE__ */ jsx(MobileLayout, { items: props.items, title: props.title, selectedIndex }) })
+   ] });
+ }
++
+ function Items(props) {
+   const router = useRouter();
+   return props.items.map((item, index) => item.type === "item" ? /* @__PURE__ */ jsxs(
+@@ -36,6 +38,7 @@ function Items(props) {
+       onClick: () => {
+         if (item.id) {
+           router.push("#" + item.id);
++          props.onItemClick?.(); // 👈 Fecha a sidebar após navegar
+         }
+       },
+       children: [
+@@ -46,11 +49,12 @@ function Items(props) {
+     index
+   ) : /* @__PURE__ */ jsx(Typography, { children: item.title }, index));
+ }
++
+ function DesktopLayout(props) {
+   const selectedItem = props.items[props.selectedIndex === -1 ? 0 : props.selectedIndex];
+   return /* @__PURE__ */ jsxs("div", { className: "stack-scope flex w-full h-full max-w-full relative", children: [
+-    /* @__PURE__ */ jsxs("div", { className: "flex max-w-[200px] min-w-[200px] border-r flex-col items-stretch gap-2 p-2 overflow-y-auto", children: [
+-      props.title && /* @__PURE__ */ jsx("div", { className: "mb-2 ml-2", children: /* @__PURE__ */ jsx(Typography, { type: "h2", className: "text-lg font-semibold text-zinc-800 dark:text-zinc-300", children: props.title }) }),
++    /* @__PURE__ */ jsxs("div", { className: "flex max-w-[400px] min-w-[300px] border-r flex-col items-stretch gap-2 p-2 overflow-y-auto", children: [
++      props.title && /* @__PURE__ */ jsx("div", { className: "mb-2 ml-2 mr-2", children: /* @__PURE__ */ jsx(Typography, { type: "h2", className: "text-lg font-semibold text-zinc-800 dark:text-zinc-300", children: props.title }) }),
+       /* @__PURE__ */ jsx(Items, { items: props.items, selectedIndex: props.selectedIndex })
+     ] }),
+     /* @__PURE__ */ jsx("div", { className: "flex-1 w-0 flex justify-center gap-4 py-2 px-4", children: /* @__PURE__ */ jsxs("div", { className: "flex flex-col max-w-[800px] w-[800px]", children: [
+@@ -62,13 +66,30 @@ function DesktopLayout(props) {
+     ] }) })
+   ] });
+ }
++
+ function MobileLayout(props) {
++  const [isSidebarOpen, setIsSidebarOpen] = useState(true); // Estado para controlar a visibilidade da sidebar
+   const selectedItem = props.items[props.selectedIndex];
+   const router = useRouter();
+-  if (props.selectedIndex === -1) {
++
++  const toggleSidebar = () => {
++    setIsSidebarOpen(!isSidebarOpen); // Alternar entre aberto e fechado
++  };
++
++  if (props.selectedIndex === -1 || !isSidebarOpen) {
+     return /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-2 p-2", children: [
+-      props.title && /* @__PURE__ */ jsx("div", { className: "mb-2 ml-2", children: /* @__PURE__ */ jsx(Typography, { type: "h2", className: "text-lg font-semibold text-zinc-800 dark:text-zinc-300", children: props.title }) }),
+-      /* @__PURE__ */ jsx(Items, { items: props.items, selectedIndex: props.selectedIndex })
++      /* Botão para abrir a sidebar */
++      /* @__PURE__ */ jsx(
++        Button,
++        {
++          variant: "ghost",
++          size: "icon",
++          onClick: toggleSidebar,
++          children: /* @__PURE__ */ jsx(XIcon, { className: "h-5 w-5" }) // Ícone de menu
++        }
++      ),
++      props.title && /* @__PURE__ */ jsx("div", { className: "mb-2 ml-2 mr-2", children: /* @__PURE__ */ jsx(Typography, { type: "h2", className: "text-lg font-semibold text-zinc-800 dark:text-zinc-300", children: props.title }) }),
++      /* @__PURE__ */ jsx(Items, { items: props.items, selectedIndex: props.selectedIndex, onItemClick: () => setIsSidebarOpen(true) })
+     ] });
+   } else {
+     return /* @__PURE__ */ jsxs("div", { className: "flex-1 flex flex-col gap-4 py-2 px-4", children: [
+@@ -82,8 +103,9 @@ function MobileLayout(props) {
+               size: "icon",
+               onClick: () => {
+                 router.push("#");
++                setIsSidebarOpen(false); // Fecha a sidebar ao voltar
+               },
+-              children: /* @__PURE__ */ jsx(XIcon, { className: "h-5 w-5" })
++              children: /* @__PURE__ */ jsx(MenuIcon, { className: "h-5 w-5" })
+             }
+           )
+         ] }),
+@@ -93,7 +115,7 @@ function MobileLayout(props) {
+     ] });
+   }
+ }
++
+ export {
+   SidebarLayout
+ };
+\ No newline at end of file
+-//# sourceMappingURL=sidebar-layout.js.map
+\ No newline at end of file
+diff --git a/node_modules/@stackframe/stack/dist/esm/generated/quetzal-translations.js b/node_modules/@stackframe/stack/dist/esm/generated/quetzal-translations.js
+index 83997d2..edf5127 100644
+--- a/node_modules/@stackframe/stack/dist/esm/generated/quetzal-translations.js
++++ b/node_modules/@stackframe/stack/dist/esm/generated/quetzal-translations.js
+@@ -1690,7 +1690,7 @@ var quetzalLocales = new Map(typedEntries({
+     "__stack-auto-translation-182": "Link de Redefini\xE7\xE3o de Senha Utilizado",
+     "__stack-auto-translation-183": "Link de Convite de Equipe Usado",
+     "__stack-auto-translation-184": "Usu\xE1rio",
+-    "__stack-auto-translation-185": "Nome de usu\xE1rio",
++    "__stack-auto-translation-185": "Nome de Completo",
+     "__stack-auto-translation-186": "Verificar",
+     "__stack-auto-translation-187": "Voc\xEA j\xE1 est\xE1 conectado",
+     "__stack-auto-translation-188": "Voc\xEA n\xE3o est\xE1 atualmente conectado.",

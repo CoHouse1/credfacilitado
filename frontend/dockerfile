@@ -1,0 +1,23 @@
+# Usa a imagem oficial do Node.js
+FROM node:18
+
+# Define o diretório de trabalho
+WORKDIR /app
+
+# Copia os arquivos do projeto
+COPY package*.json ./
+
+# Instala as dependências
+RUN npm install
+
+# Copia o restante do código
+COPY . .
+
+# Build do frontend
+RUN npm run build
+
+# Expondo a porta do frontend
+EXPOSE 3001
+
+# Comando para rodar o frontend
+CMD ["npm", "run", "start"]
