@@ -24,8 +24,8 @@ Este projeto é uma aplicação que simula o fluxo de solicitação de emprésti
 
 1. Clone o repositório:
    ```bash
-   git clone <URL do repositório>
-   cd <diretório do projeto>
+   git clone https://github.com/CoHouse1/credfacilitado.git
+   cd credfacilitado
 
 2. Construa a imagem Docker:
  - Acesse a raiz do diretório
